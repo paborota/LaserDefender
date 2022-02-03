@@ -11,12 +11,15 @@ public class HealthManager : MonoBehaviour
     [SerializeField] private ParticleSystem explosionEffect;
     
     private CameraShake _cameraShake;
+    private AudioPlayer _audioPlayer;
 
     // Uncomment _isAlive lines if planning on keeping game object around after death
     // private bool _isAlive;
 
     private void Awake()
     {
+        _audioPlayer = FindObjectOfType<AudioPlayer>();
+        
         // Check to make sure we're the player
         LayerMask playerLayerMask = LayerMask.GetMask("Player");
         if (((1 << gameObject.layer) & playerLayerMask) == 0) return;
@@ -47,6 +50,7 @@ public class HealthManager : MonoBehaviour
         
         PlayHitEffect();
         PlayCameraShake();
+        PlayDamageSound();
         
         _currentHealth -= damage;
         Mathf.Clamp(_currentHealth, 0.0f, startingHealth);
@@ -70,6 +74,13 @@ public class HealthManager : MonoBehaviour
         if (_cameraShake == null) return;
         
         _cameraShake.Play();
+    }
+
+    private void PlayDamageSound()
+    {
+        if (_audioPlayer == null) return;
+        
+        _audioPlayer.PlayDamageClip();
     }
 
     private void Die()

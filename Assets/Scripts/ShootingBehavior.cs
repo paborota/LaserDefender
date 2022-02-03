@@ -16,6 +16,12 @@ public class ShootingBehavior : MonoBehaviour
     private Vector2 _shootingDirection;
 
     private Coroutine _firingCoroutine;
+    private AudioPlayer _audioPlayer;
+
+    private void Awake()
+    {
+        _audioPlayer = FindObjectOfType<AudioPlayer>();
+    }
 
     private void Start()
     {
@@ -45,6 +51,8 @@ public class ShootingBehavior : MonoBehaviour
         // This will need to be terminated outside of the function using StopCoroutine.
         while (true)
         {
+            _audioPlayer.PlayShootingClip();
+            
             var instance = Instantiate(projectilePrefab, gameObject.transform.position, Quaternion.identity);
         
             // @TODO Set projectile instance speed
