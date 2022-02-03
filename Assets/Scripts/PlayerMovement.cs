@@ -17,9 +17,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float paddingTop = 0.1f;
     [SerializeField] private float paddingBottom = 0.1f;
 
+    private ShootingBehavior _shootingBehavior;
+
     private void Start()
     {
         IniBounds();
+        _shootingBehavior = GetComponent<ShootingBehavior>();
     }
 
     // Update is called once per frame
@@ -45,6 +48,19 @@ public class PlayerMovement : MonoBehaviour
         newPos.x = Mathf.Clamp(currentTransform.x + delta.x, _minBounds.x + paddingLeft, _maxBounds.x - paddingRight);
         newPos.y = Mathf.Clamp(currentTransform.y + delta.y, _minBounds.y + paddingBottom, _maxBounds.y - paddingTop);
         transform.position = newPos;
+    }
+
+    private void OnFire(InputValue value)
+    {
+        // Set is firing in our shooting behavior
+        if (value.isPressed)
+        {
+            _shootingBehavior.StartFiring();
+        }
+        else
+        {
+            _shootingBehavior.StopFiring();
+        }
     }
 
     private void OnMove(InputValue value)

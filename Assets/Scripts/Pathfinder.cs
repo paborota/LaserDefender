@@ -21,14 +21,14 @@ public class Pathfinder : MonoBehaviour
         _waveConfig = _enemySpawner.GetCurrentWave();
         if (_waveConfig == null)
         {
-            Debug.LogWarning("There were no Wave Config found when accessing the Enemy Spawner");
+            Debug.LogWarning("PATHFINDER: There were no Wave Config found when accessing the Enemy Spawner");
             return;
         }
         
         _waypoints = _waveConfig.GetWaypoints();
         if (_waypoints.Count == 0)
         {
-            Debug.LogWarning("There were no waypoints found when accessing the Enemy Spawner's Wave Config");
+            Debug.LogWarning("PATHFINDER: There were no waypoints found when accessing the Enemy Spawner's Wave Config");
             return;
         }
         
