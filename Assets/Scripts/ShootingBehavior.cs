@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ShootingBehavior : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class ShootingBehavior : MonoBehaviour
     [SerializeField] private float timeBetweenShots = 0.5f;
 
     [SerializeField] private bool useAI;
+    [SerializeField] private float timeBetweenShotsVariance = 0.0f;
     private Vector2 _shootingDirection;
 
     private Coroutine _firingCoroutine;
@@ -18,7 +20,11 @@ public class ShootingBehavior : MonoBehaviour
     private void Start()
     {
         _shootingDirection = transform.up;
-        if (!useAI) return;
+        if (!useAI)
+        {
+            timeBetweenShotsVariance = 0.0f;
+            return;
+        }
         
         _shootingDirection = -_shootingDirection;
         StartFiring();
@@ -50,7 +56,9 @@ public class ShootingBehavior : MonoBehaviour
             // Destroy after set lifetime
             Destroy(instance, projectileLifetime);
 
-            yield return new WaitForSecondsRealtime(timeBetweenShots);
+            var timeToWait = Random.Range(timeBetweenShots - timeBetweenShotsVariance,
+                timeBetweenShots + timeBetweenShotsVariance);
+            yield return new WaitForSecondsRealtime(timeToWait);
         }
     }
 }

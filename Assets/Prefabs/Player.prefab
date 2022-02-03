@@ -240,6 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingHealth: 50
+  explosionEffect: {fileID: 1943795091380766435, guid: 8ffe30c5a0b780f42b221bba56216c32, type: 3}
 --- !u!114 &4064273479706382104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,4 +269,6 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4684209274530393139, guid: 0306eafebc6c84b829fcd94797bdd5f2, type: 3}
   projectileSpeed: 10
   projectileLifetime: 5
-  timeBetweenShots: 0.5
+  timeBetweenShots: 0.15
+  useAI: 0
+  timeBetweenShotsVariance: 0

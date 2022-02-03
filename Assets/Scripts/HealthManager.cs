@@ -8,12 +8,28 @@ public class HealthManager : MonoBehaviour
     [SerializeField] private int startingHealth = 50;
     private int _currentHealth;
 
+    [SerializeField] private ParticleSystem explosionEffect;
+    
+    private CameraShake _cameraShake;
+
     // Uncomment _isAlive lines if planning on keeping game object around after death
-    //private bool _isAlive;
+    // private bool _isAlive;
+
+    private void Awake()
+    {
+        // Check to make sure we're the player
+        LayerMask playerLayerMask = LayerMask.GetMask("Player");
+        if (((1 << gameObject.layer) & playerLayerMask) == 0) return;
+
+        // Check to make sure the main camera is not a null reference
+        if (Camera.main == null) return;
+        _cameraShake = Camera.main.GetComponent<CameraShake>();
+    }
 
     private void Start()
     {
         _currentHealth = startingHealth;
+
         // _isAlive = true;
     }
 
@@ -21,7 +37,7 @@ public class HealthManager : MonoBehaviour
     {
         DamageDealer damageDealer = col.GetComponent<DamageDealer>();
         if (damageDealer == null) return;
-        
+
         TakeDamage(damageDealer.GetDamage());
     }
 
@@ -29,12 +45,31 @@ public class HealthManager : MonoBehaviour
     {
         // if (!_isAlive) return;
         
+        PlayHitEffect();
+        PlayCameraShake();
+        
         _currentHealth -= damage;
         Mathf.Clamp(_currentHealth, 0.0f, startingHealth);
         if (_currentHealth == 0)
         {
             Die();
         }
+    }
+
+    private void PlayHitEffect()
+    {
+        if (explosionEffect == null) return;
+        
+        ParticleSystem instance = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        var main = instance.main;
+        Destroy(instance.gameObject, main.duration + main.startLifetime.constantMax);
+    }
+
+    private void PlayCameraShake()
+    {
+        if (_cameraShake == null) return;
+        
+        _cameraShake.Play();
     }
 
     private void Die()
