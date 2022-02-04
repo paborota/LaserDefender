@@ -5,32 +5,38 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-    // public delegate void PlayerDamaged();
-    // public event PlayerDamaged OnPlayerDamaged;
+    public delegate void PlayerHealthUpdated();
+    public event PlayerHealthUpdated OnPlayerHealthUpdated;
 
-    private ScoreKeeper _scoreKeeper;
 
-        [SerializeField] private int startingHealth = 50;
-    private int _currentHealth;
+    [SerializeField] private bool isPlayer;
+    [SerializeField] private int startingHealth = 50;
+
+    public int StartingHealth => startingHealth;
+
+    public int CurrentHealth { get; private set; }
+
+
+    [SerializeField] private int scoreForKill = 0;
 
     [SerializeField] private ParticleSystem explosionEffect;
     
     private CameraShake _cameraShake;
     private AudioPlayer _audioPlayer;
+    private ScoreKeeper _scoreKeeper;
 
     private void Awake()
     {
         _audioPlayer = FindObjectOfType<AudioPlayer>();
         
-        _currentHealth = startingHealth;
+        CurrentHealth = startingHealth;
         
         _scoreKeeper = FindObjectOfType<ScoreKeeper>();
-        
-        // if (gameObject.CompareTag("Player") && _scoreKeeper != null)
-        // {
-        //     _scoreKeeper.IniPlayerHealth(this);
-        // }
-        
+        if (_scoreKeeper == null)
+        {
+            Debug.Log("Score keeper object could not be found.");
+        }
+
         // Check to make sure we're the player
         LayerMask playerLayerMask = LayerMask.GetMask("Player");
         if (((1 << gameObject.layer) & playerLayerMask) == 0) return;
@@ -42,15 +48,10 @@ public class HealthManager : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        DamageDealer damageDealer = col.GetComponent<DamageDealer>();
+        var damageDealer = col.GetComponent<DamageDealer>();
         if (damageDealer == null) return;
 
         TakeDamage(damageDealer.GetDamage());
-    }
-
-    public int GetCurrentHealth()
-    {
-        return _currentHealth;
     }
 
     public void TakeDamage(int damage)
@@ -59,15 +60,14 @@ public class HealthManager : MonoBehaviour
         PlayCameraShake();
         PlayDamageSound();
         
-        _currentHealth -= damage;
-        if (gameObject.CompareTag("Player") && _scoreKeeper != null)
+        CurrentHealth -= damage;
+        if (isPlayer)
         {
-            // OnPlayerDamaged?.Invoke();
-            _scoreKeeper.OnPlayerDamaged(ref _currentHealth);
+            OnPlayerHealthUpdated?.Invoke();
         }
-        
-        Mathf.Clamp(_currentHealth, 0.0f, startingHealth);
-        if (_currentHealth == 0)
+
+        Mathf.Clamp(CurrentHealth, 0.0f, startingHealth);
+        if (CurrentHealth == 0)
         {
             Die();
         }
@@ -98,9 +98,9 @@ public class HealthManager : MonoBehaviour
 
     private void Die()
     {
-        if (_scoreKeeper != null)
+        if (!isPlayer && _scoreKeeper != null)
         {
-            _scoreKeeper.OnDeath(gameObject);
+            _scoreKeeper.ModifyScore(ref scoreForKill);
         }
         
         Destroy(gameObject);
