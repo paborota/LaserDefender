@@ -17,7 +17,7 @@ public class HealthManager : MonoBehaviour
     public int CurrentHealth { get; private set; }
 
 
-    [SerializeField] private int scoreForKill = 0;
+    [SerializeField] private int scoreForKill;
 
     [SerializeField] private ParticleSystem explosionEffect;
     

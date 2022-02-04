@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class BackgroundHandler : MonoBehaviour
 {
-    private bool _gameIsOn;
     [SerializeField] private BackgroundScroller bs1;
     [SerializeField] private BackgroundScroller bs2;
 
