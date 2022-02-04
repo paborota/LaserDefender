@@ -1,9 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioPlayer : MonoBehaviour
 {
+    private AudioSource _musicLoop;
+    
+    // [Header("Music")]
+    // [SerializeField] private AudioClip baseMusic;
+    // [SerializeField] [Range(0.0f, 1.0f)] private float musicVolume = 1.0f;
+    
     [Header("Shooting")]
     [SerializeField] private AudioClip shootingClip;
     [SerializeField] [Range(0.0f, 1.0f)] private float shootingVolume = 1.0f;
@@ -11,6 +18,25 @@ public class AudioPlayer : MonoBehaviour
     [Header("On Damage")]
     [SerializeField] private AudioClip damageClip;
     [SerializeField] [Range(0.0f, 1.0f)] private float damageVolume = 1.0f;
+
+    private void Awake()
+    {
+        _musicLoop = GetComponent<AudioSource>();
+    }
+
+    public void StartMusic()
+    {
+        if (_musicLoop == null) return;
+        
+        _musicLoop.Play();
+    }
+
+    public void StopMusic()
+    {
+        if (_musicLoop == null) return;
+        
+        _musicLoop.Stop();
+    }
     
     public void PlayShootingClip()
     {

@@ -5,7 +5,12 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-    [SerializeField] private int startingHealth = 50;
+    // public delegate void PlayerDamaged();
+    // public event PlayerDamaged OnPlayerDamaged;
+
+    private ScoreKeeper _scoreKeeper;
+
+        [SerializeField] private int startingHealth = 50;
     private int _currentHealth;
 
     [SerializeField] private ParticleSystem explosionEffect;
@@ -13,12 +18,18 @@ public class HealthManager : MonoBehaviour
     private CameraShake _cameraShake;
     private AudioPlayer _audioPlayer;
 
-    // Uncomment _isAlive lines if planning on keeping game object around after death
-    // private bool _isAlive;
-
     private void Awake()
     {
         _audioPlayer = FindObjectOfType<AudioPlayer>();
+        
+        _currentHealth = startingHealth;
+        
+        _scoreKeeper = FindObjectOfType<ScoreKeeper>();
+        
+        // if (gameObject.CompareTag("Player") && _scoreKeeper != null)
+        // {
+        //     _scoreKeeper.IniPlayerHealth(this);
+        // }
         
         // Check to make sure we're the player
         LayerMask playerLayerMask = LayerMask.GetMask("Player");
@@ -29,13 +40,6 @@ public class HealthManager : MonoBehaviour
         _cameraShake = Camera.main.GetComponent<CameraShake>();
     }
 
-    private void Start()
-    {
-        _currentHealth = startingHealth;
-
-        // _isAlive = true;
-    }
-
     private void OnTriggerEnter2D(Collider2D col)
     {
         DamageDealer damageDealer = col.GetComponent<DamageDealer>();
@@ -44,15 +48,24 @@ public class HealthManager : MonoBehaviour
         TakeDamage(damageDealer.GetDamage());
     }
 
+    public int GetCurrentHealth()
+    {
+        return _currentHealth;
+    }
+
     public void TakeDamage(int damage)
     {
-        // if (!_isAlive) return;
-        
         PlayHitEffect();
         PlayCameraShake();
         PlayDamageSound();
         
         _currentHealth -= damage;
+        if (gameObject.CompareTag("Player") && _scoreKeeper != null)
+        {
+            // OnPlayerDamaged?.Invoke();
+            _scoreKeeper.OnPlayerDamaged(ref _currentHealth);
+        }
+        
         Mathf.Clamp(_currentHealth, 0.0f, startingHealth);
         if (_currentHealth == 0)
         {
@@ -85,7 +98,11 @@ public class HealthManager : MonoBehaviour
 
     private void Die()
     {
-        // _isAlive = false;
+        if (_scoreKeeper != null)
+        {
+            _scoreKeeper.OnDeath(gameObject);
+        }
+        
         Destroy(gameObject);
     }
 }
