@@ -5,7 +5,11 @@ using UnityEngine;
 public class BackgroundScroller : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 1.0f;
-
+    private float _newMoveSpeed;
+    [SerializeField] private float lerpSpeed = 0.5f;
+    private float _defaultMoveSpeed;
+    
+    
     private Vector2 _offset;
     private Material _material;
     
@@ -13,12 +17,38 @@ public class BackgroundScroller : MonoBehaviour
     void Awake()
     {
         _material = GetComponent<SpriteRenderer>().material;
+        _defaultMoveSpeed = moveSpeed;
+        _newMoveSpeed = moveSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        _offset.y += moveSpeed * Time.deltaTime;
+        // _offset.y += moveSpeed * Time.deltaTime;
+        // _material.mainTextureOffset = _offset;
+
+        _offset.y += GetMoveSpeedInterp() * Time.deltaTime;
         _material.mainTextureOffset = _offset;
+    }
+
+    private float GetMoveSpeedInterp()
+    {
+        return Mathf.Lerp(moveSpeed, _newMoveSpeed, lerpSpeed);
+    }
+
+    public void ResetScrollSpeed()
+    {
+        _newMoveSpeed = _defaultMoveSpeed;
+    }
+
+    public void LerpScrollSpeed(ref float multiplier)
+    {
+        _newMoveSpeed = moveSpeed * multiplier;
+    }
+
+    public void AlterScrollSpeed(ref float multiplier)
+    {
+        moveSpeed *= multiplier;
+        _newMoveSpeed = moveSpeed;
     }
 }
