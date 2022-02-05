@@ -61,7 +61,7 @@ public class ShootingBehavior : MonoBehaviour
         while (true)
         {
             _audioPlayer.PlayShootingClip();
-            
+
             var instance = Instantiate(projectilePrefab,
                 gameObject.transform.position,
                 Quaternion.identity,

@@ -19,16 +19,21 @@ public class AudioPlayer : MonoBehaviour
     [SerializeField] private AudioClip damageClip;
     [SerializeField] [Range(0.0f, 1.0f)] private float damageVolume = 1.0f;
 
+    // Singleton Instance
+    private static AudioPlayer _instance;
+
     private void Awake()
     {
         _musicLoop = GetComponent<AudioSource>();
-        if (FindObjectsOfType<AudioPlayer>().Length > 1)
+        // if (FindObjectsOfType<AudioPlayer>().Length > 1)
+        if (_instance != null)
         {
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
         else
         {
+            _instance = this;
             DontDestroyOnLoad(gameObject);
         }
     }

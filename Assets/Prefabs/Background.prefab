@@ -298,4 +298,4 @@ MonoBehaviour:
   bs1: {fileID: 3284583631650511509}
   bs2: {fileID: 3284583632238224706}
   scrollSpeedMultiplierInMenu: 0.25
-  lerpOfSpeedChange: 0.4
+  lerpOfSpeedChange: 0.75

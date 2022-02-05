@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [SerializeField] private float timeBeforeInitialWave = 1.0f;
     [SerializeField] private List<WaveConfigSO> waveConfigs;
     [SerializeField] private float timeBetweenWaves;
     private WaveConfigSO _currentWave;
@@ -23,12 +24,18 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
         
-        StartCoroutine(SpawnEnemies());
+        StartCoroutine(StartWave());
     }
 
     public WaveConfigSO GetCurrentWave()
     {
         return _currentWave;
+    }
+
+    private IEnumerator StartWave()
+    {
+        yield return new WaitForSecondsRealtime(timeBeforeInitialWave);
+        StartCoroutine(SpawnEnemies());
     }
 
     private IEnumerator SpawnEnemies()

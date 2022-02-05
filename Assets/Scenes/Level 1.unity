@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c31ce9d34d21415ea1d208719f71c38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeBeforeInitialWave: 2
   waveConfigs:
   - {fileID: 11400000, guid: edeb6f379eb09463e9cfe33724fc6cf4, type: 2}
   - {fileID: 11400000, guid: 9807c95dd2f9f4e43b7324c88259743c, type: 2}

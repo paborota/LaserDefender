@@ -34,7 +34,8 @@ public class BackgroundScroller : MonoBehaviour
 
     private float GetMoveSpeedInterp()
     {
-        return Mathf.Lerp(moveSpeed, _newMoveSpeed, LerpSpeed);
+        moveSpeed = Mathf.Lerp(moveSpeed, _newMoveSpeed, LerpSpeed * Time.deltaTime);
+        return moveSpeed;
     }
 
     public void ResetScrollSpeed()

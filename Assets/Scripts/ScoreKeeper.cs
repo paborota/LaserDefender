@@ -13,15 +13,19 @@ public class ScoreKeeper : MonoBehaviour
 
     public int CurrentScore { get; private set; }
 
+    // Singleton Instance
+    private static ScoreKeeper _instance;
+
     private void Awake()
     {
-        if (FindObjectsOfType<ScoreKeeper>().Length > 1)
+        if (_instance != null)
         {
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
         else
         {
+            _instance = this;
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += HandleScoreReset;
         }
