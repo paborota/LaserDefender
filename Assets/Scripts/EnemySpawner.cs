@@ -8,7 +8,11 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float timeBetweenWaves;
     private WaveConfigSO _currentWave;
 
-    private bool _spawningShouldLoop;
+    [Tooltip("Whether or not the game should continually spawn these waves.")]
+    [SerializeField] private bool spawningShouldLoop = true;
+
+    [Tooltip("Used to keep the Scene Hierarchy clean by parenting the projectiles to this empty object.")]
+    [SerializeField] private Transform projectileContainer;
     
     void Start()
     {
@@ -18,8 +22,7 @@ public class EnemySpawner : MonoBehaviour
             Debug.LogWarning("There are no Wave Configs linked to the Enemy Spawner.");
             return;
         }
-
-        _spawningShouldLoop = true;
+        
         StartCoroutine(SpawnEnemies());
     }
 
@@ -37,10 +40,11 @@ public class EnemySpawner : MonoBehaviour
                 _currentWave = waveConfig;
                 for (int i = 0; i < _currentWave.GetEnemyCount(); ++i)
                 {
-                    Instantiate(_currentWave.GetEnemyPrefab(i),
+                    var enemy = Instantiate(_currentWave.GetEnemyPrefab(i),
                         _currentWave.GetStartingWaypoint().position,
                         Quaternion.identity,
                         transform);
+                    enemy.GetComponent<ShootingBehavior>().projectileContainer = projectileContainer;
                     // Wait before spawning next enemy
                     yield return new WaitForSecondsRealtime(_currentWave.GetRandomSpawnTime());
                 }
@@ -48,6 +52,6 @@ public class EnemySpawner : MonoBehaviour
                 // Wait before next wave starts
                 yield return new WaitForSecondsRealtime(timeBetweenWaves);
             }
-        } while (_spawningShouldLoop);
+        } while (spawningShouldLoop);
     }
 }

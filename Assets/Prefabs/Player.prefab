@@ -241,6 +241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlayer: 1
   startingHealth: 50
+  timeInSecondsBeforePlayerDeathBroadcast: 1
   scoreForKill: 0
   explosionEffect: {fileID: 1943795091380766435, guid: 8ffe30c5a0b780f42b221bba56216c32, type: 3}
 --- !u!114 &4064273479706382104
@@ -272,5 +273,5 @@ MonoBehaviour:
   projectileSpeed: 10
   projectileLifetime: 5
   timeBetweenShots: 0.15
-  useAI: 0
+  projectileContainer: {fileID: 0}
   timeBetweenShotsVariance: 0

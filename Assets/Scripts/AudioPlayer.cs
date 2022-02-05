@@ -22,6 +22,15 @@ public class AudioPlayer : MonoBehaviour
     private void Awake()
     {
         _musicLoop = GetComponent<AudioSource>();
+        if (FindObjectsOfType<AudioPlayer>().Length > 1)
+        {
+            gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
     public void StartMusic()

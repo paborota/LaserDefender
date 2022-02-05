@@ -19,33 +19,38 @@ public class UIDisplay : MonoBehaviour
 
     private void Awake()
     {
-        _scoreKeeper = FindObjectOfType<ScoreKeeper>();
-        if (_scoreKeeper != null)
-        {
-            _scoreKeeper.OnUpdateScore += UpdateScore;
-        }
-
-        if (playerHealthManager != null)
-        {
-            playerHealthManager.OnPlayerHealthUpdated += UpdateHealth;
-        }
+        if (playerHealthManager == null) return;
+        
+        playerHealthManager.OnPlayerHealthUpdated += UpdateHealth;
+        healthSlider.maxValue = playerHealthManager.StartingHealth;
     }
 
     private void Start()
     {
-        healthSlider.maxValue = playerHealthManager.StartingHealth;
-
+        SetupScoreKeeperLink();
         UpdateScore();
         UpdateHealth();
     }
 
+    private void SetupScoreKeeperLink()
+    {
+        _scoreKeeper = FindObjectOfType<ScoreKeeper>();
+        if (_scoreKeeper == null) return;
+        
+        _scoreKeeper.OnUpdateScore += UpdateScore;
+    }
+
     private void UpdateScore()
     {
+        if (_scoreKeeper == null) return;
+        
         scoreText.text = _scoreKeeper.CurrentScore.ToString();
     }
 
     private void UpdateHealth()
     {
+        if (playerHealthManager == null) return;
+        
         healthSlider.value = playerHealthManager.CurrentHealth;
     }
 }

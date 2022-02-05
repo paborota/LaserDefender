@@ -10,15 +10,19 @@ public class BackgroundHandler : MonoBehaviour
     [SerializeField] private BackgroundScroller bs2;
 
     [SerializeField] private float scrollSpeedMultiplierInMenu = 0.5f;
+    [SerializeField] [Range(0.0f, 1.0f)] private float lerpOfSpeedChange = 0.5f;
     private void Awake()
     {
         if (FindObjectsOfType<BackgroundHandler>().Length > 1)
         {
+            gameObject.SetActive(false);
             Destroy(gameObject);
         }
         else
         {
             DontDestroyOnLoad(gameObject);
+            bs1.LerpSpeed = lerpOfSpeedChange;
+            bs2.LerpSpeed = lerpOfSpeedChange;
             AlterScrollSpeed(scrollSpeedMultiplierInMenu);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }

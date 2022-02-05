@@ -98,7 +98,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0.01
-  lerpSpeed: 0.5
 --- !u!1 &3284583632238224704
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,7 +196,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
-  lerpSpeed: 0.5
 --- !u!1 &3284583633343099573
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,3 +298,4 @@ MonoBehaviour:
   bs1: {fileID: 3284583631650511509}
   bs2: {fileID: 3284583632238224706}
   scrollSpeedMultiplierInMenu: 0.25
+  lerpOfSpeedChange: 0.4

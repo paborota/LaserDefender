@@ -6,12 +6,16 @@ using Random = UnityEngine.Random;
 
 public class ShootingBehavior : MonoBehaviour
 {
+    [Header("Projectile prefab used for this Game Object.")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private float projectileSpeed = 10.0f;
     [SerializeField] private float projectileLifetime = 5.0f;
     [SerializeField] private float timeBetweenShots = 0.5f;
 
-    [SerializeField] private bool useAI;
+    [SerializeField] public Transform projectileContainer;
+    
+    // [Header("Whether or not this is a bot or player.")]
+    private bool _useAI;
     [SerializeField] private float timeBetweenShotsVariance = 0.0f;
     private Vector2 _shootingDirection;
 
@@ -21,12 +25,17 @@ public class ShootingBehavior : MonoBehaviour
     private void Awake()
     {
         _audioPlayer = FindObjectOfType<AudioPlayer>();
+        LayerMask playerLayer = LayerMask.GetMask("Player");
+        if (((1 << gameObject.layer) & playerLayer) == 0)
+        {
+            _useAI = true;
+        }
     }
 
     private void Start()
     {
         _shootingDirection = transform.up;
-        if (!useAI)
+        if (!_useAI)
         {
             timeBetweenShotsVariance = 0.0f;
             return;
@@ -53,7 +62,10 @@ public class ShootingBehavior : MonoBehaviour
         {
             _audioPlayer.PlayShootingClip();
             
-            var instance = Instantiate(projectilePrefab, gameObject.transform.position, Quaternion.identity);
+            var instance = Instantiate(projectilePrefab,
+                gameObject.transform.position,
+                Quaternion.identity,
+                projectileContainer);
         
             // @TODO Set projectile instance speed
             var rb = instance.GetComponent<Rigidbody2D>();

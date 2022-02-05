@@ -7,8 +7,12 @@ public class HealthManager : MonoBehaviour
 {
     public delegate void PlayerHealthUpdated();
     public event PlayerHealthUpdated OnPlayerHealthUpdated;
+    
+    public delegate void PlayerDied();
+    public event PlayerDied OnPlayerDeath;
 
-
+    [Header("Player Params")]
+    [Tooltip("AI Params ignored if set to true.")]
     [SerializeField] private bool isPlayer;
     [SerializeField] private int startingHealth = 50;
 
@@ -17,10 +21,14 @@ public class HealthManager : MonoBehaviour
     public int CurrentHealth { get; private set; }
 
 
+    [Header("Enemy Params")]
+    [Tooltip("Points added to game score when this unit is destroyed by player.")]
     [SerializeField] private int scoreForKill;
 
+    [Header("Effects")]
     [SerializeField] private ParticleSystem explosionEffect;
     
+    [Header("Needed GameObjects")]
     private CameraShake _cameraShake;
     private AudioPlayer _audioPlayer;
     private ScoreKeeper _scoreKeeper;
@@ -36,14 +44,20 @@ public class HealthManager : MonoBehaviour
         {
             Debug.Log("Score keeper object could not be found.");
         }
+        
+        // Player Only Setup
+        if (!isPlayer) return;
+        
+        var levelManager = FindObjectOfType<LevelManager>();
+        if (levelManager != null)
+        {
+            OnPlayerDeath += levelManager.GameOver;
+        }
 
-        // Check to make sure we're the player
-        LayerMask playerLayerMask = LayerMask.GetMask("Player");
-        if (((1 << gameObject.layer) & playerLayerMask) == 0) return;
-
-        // Check to make sure the main camera is not a null reference
-        if (Camera.main == null) return;
-        _cameraShake = Camera.main.GetComponent<CameraShake>();
+        if (Camera.main != null)
+        {
+            _cameraShake = Camera.main.GetComponent<CameraShake>();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -61,13 +75,15 @@ public class HealthManager : MonoBehaviour
         PlayDamageSound();
         
         CurrentHealth -= damage;
+        CurrentHealth = Math.Clamp(CurrentHealth, 0, startingHealth);
+        
         if (isPlayer)
         {
             OnPlayerHealthUpdated?.Invoke();
+            Debug.Log("Current Health: " + CurrentHealth);
         }
-
-        Mathf.Clamp(CurrentHealth, 0.0f, startingHealth);
-        if (CurrentHealth == 0)
+        
+        if (CurrentHealth <= 0)
         {
             Die();
         }
@@ -98,9 +114,14 @@ public class HealthManager : MonoBehaviour
 
     private void Die()
     {
-        if (!isPlayer && _scoreKeeper != null)
+        switch (isPlayer)
         {
-            _scoreKeeper.ModifyScore(ref scoreForKill);
+            case false when _scoreKeeper != null:
+                _scoreKeeper.ModifyScore(ref scoreForKill);
+                break;
+            case true:
+                OnPlayerDeath?.Invoke();
+                break;
         }
         
         Destroy(gameObject);

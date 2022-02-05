@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class BackgroundScroller : MonoBehaviour
 {
+    [Tooltip("Vertical scrolling speed of the background image.")]
     [SerializeField] private float moveSpeed = 1.0f;
     private float _newMoveSpeed;
-    [SerializeField] private float lerpSpeed = 0.5f;
+    public float LerpSpeed { get; set; }
     private float _defaultMoveSpeed;
     
     
@@ -33,7 +34,7 @@ public class BackgroundScroller : MonoBehaviour
 
     private float GetMoveSpeedInterp()
     {
-        return Mathf.Lerp(moveSpeed, _newMoveSpeed, lerpSpeed);
+        return Mathf.Lerp(moveSpeed, _newMoveSpeed, LerpSpeed);
     }
 
     public void ResetScrollSpeed()
