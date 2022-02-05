@@ -1433,5 +1433,9 @@ PrefabInstance:
       propertyPath: projectileContainer
       value: 
       objectReference: {fileID: 5089412091798550562}
+    - target: {fileID: 8475274410936632462, guid: 0088f1dd80cc0b84f96aad24eabbc286, type: 3}
+      propertyPath: paddingTop
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0088f1dd80cc0b84f96aad24eabbc286, type: 3}

@@ -44,7 +44,7 @@ public class UIDisplay : MonoBehaviour
     {
         if (_scoreKeeper == null) return;
         
-        scoreText.text = _scoreKeeper.CurrentScore.ToString();
+        scoreText.text = _scoreKeeper.CurrentScore.ToString("D10");
     }
 
     private void UpdateHealth()
